@@ -54,6 +54,11 @@ async function login() {
     }
 }
 
+async function logout() {
+    localStorage.removeItem('task_auth');
+    location.reload();
+}
+
 async function fetchTasks() {
     const headers = getAuthHeader();
     if (!headers.Authorization) {
@@ -273,5 +278,6 @@ window.startEdit = startEdit;
 window.deleteTask = deleteTask;
 window.toggleComplete = toggleComplete;
 window.login = login;
+window.logout = logout;
 
 fetchTasks();
