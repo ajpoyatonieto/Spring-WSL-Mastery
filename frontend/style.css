@@ -257,12 +257,40 @@ button:hover {
     border: 1px solid rgba(255, 255, 255, 0.05);
     border-radius: 16px;
     transition: all 0.3s;
+    gap: 15px;
 }
 
 .task-item:hover {
     background: rgba(255, 255, 255, 0.07);
     transform: translateX(5px);
 }
+
+.task-actions {
+    display: flex;
+    gap: 8px;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.task-item:hover .task-actions {
+    opacity: 1;
+}
+
+.btn-action {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 6px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-edit:hover { background: var(--primary); border-color: var(--primary); }
+.btn-delete:hover { background: #ef4444; border-color: #ef4444; }
 
 .task-item.completed {
     opacity: 0.5;

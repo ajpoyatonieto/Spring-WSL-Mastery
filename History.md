@@ -32,9 +32,16 @@ El proyecto se divide en dos componentes principales:
 - **Base de Datos**: PostgreSQL migrado a contenedor Docker para portabilidad total.
 - **Despliegue**: Script `deploy.sh` creado para ejecución rápida en WSL.
 
-### 5. Estado del Proyecto
-- Entidades JPA creadas (Tabla `tasks` en Postgres).
-- Frontend estético diseñado y listo para consumir la API.
+### 5. Versión 1.0.0 - Lanzamiento Oficial
+- **Campos Extendidos**: Soporte para Urgencia, Importancia y Deadline.
+- **Ordenación Multinivel**: Motor de ordenación dinámico basado en el orden de selección del usuario.
+- **Diseño Premium**: Footer con versión y copyright, modo oscuro optimizado.
+- **GitHub**: Repositorio oficial creado en `@ajpoyatonieto/Spring-WSL-Mastery`.
+
+### 6. Versión 1.1.0 - Gestión Completa (CRUD)
+- **Operaciones CRUD**: Implementación de Editar y Borrar.
+- **Interactividad**: Posibilidad de marcar tareas como completadas desde la UI.
+- **UX**: Mejora en los botones de acción y feedback visual del formulario.
 
 ---
-*Documento creado por Antigravity (AI Assistant)*
+*Documento actualizado por Antigravity (AI Assistant)*

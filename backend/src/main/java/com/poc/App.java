@@ -63,4 +63,21 @@ class TaskController {
     public Task create(@RequestBody Task task) {
         return repository.save(task);
     }
+
+    @PutMapping("/{id}")
+    public Task update(@PathVariable Long id, @RequestBody Task taskDetails) {
+        return repository.findById(id).map(task -> {
+            task.setTitle(taskDetails.getTitle());
+            task.setCompleted(taskDetails.isCompleted());
+            task.setUrgent(taskDetails.isUrgent());
+            task.setImportant(taskDetails.isImportant());
+            task.setDeadline(taskDetails.getDeadline());
+            return repository.save(task);
+        }).orElseThrow(() -> new RuntimeException("Tarea no encontrada con id " + id));
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Long id) {
+        repository.deleteById(id);
+    }
 }
