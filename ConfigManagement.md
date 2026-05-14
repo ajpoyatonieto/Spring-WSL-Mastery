@@ -8,55 +8,50 @@ Este documento define la configuración técnica, las dependencias y los procedi
 | :--- | :--- | :--- |
 | **JDK** | 21.0.11 LTS | Microsoft OpenJDK |
 | **Maven** | 3.9.7 | Apache |
-| **Docker** | 26.1.3 | Docker Inc. |
-| **PostgreSQL** | 14-alpine | Docker Hub (Official) |
-| **Nginx** | alpine | Docker Hub (Official) |
-| **Spring Boot**| 3.2.5 | VMware |
+| **Spring Boot**| 3.2.5 | VMware (Habilitado Virtual Threads) |
+| **PostgreSQL** | 14 | Nativo en WSL |
+| **Frontend** | PWA | Vanilla JS / Flatpickr / manifest.json |
 
-## 2. Matriz de Puertos y Servicios
+## 2. Matriz de Puertos y Servicios (Modo Desarrollo)
 
-| Servicio | Puerto Host | Puerto Contenedor | Acceso Externo |
-| :--- | :--- | :--- | :--- |
-| `frontend` | 80 | 80 | http://localhost |
-| `backend` | 8080 | 8080 | http://localhost:8080 |
-| `db` | 5432 | 5432 | localhost:5432 |
+| Servicio | Puerto Host | Protocolo | Acceso Local | Acceso Red WiFi |
+| :--- | :--- | :--- | :--- | :--- |
+| **Frontend** | 3000 | HTTP | `localhost:3000` | `192.168.1.170:3000` |
+| **Backend** | 8080 | HTTP | `localhost:8080` | `192.168.1.170:8080` |
+| **Base de Datos** | 5432 | TCP | `localhost:5432` | N/A (Solo Local/WSL) |
 
-## 3. Variables de Entorno (Environment Variables)
+## 3. Configuración del Backend (`application.properties`)
 
-Las variables críticas se gestionan a través del archivo `docker-compose.yml`.
-
-| Variable | Valor por Defecto | Descripción |
+| Propiedad | Valor | Descripción |
 | :--- | :--- | :--- |
-| `POSTGRES_DB` | `poc_db` | Nombre de la base de datos |
-| `POSTGRES_USER` | `postgres` | Usuario administrador de DB |
-| `POSTGRES_PASSWORD`| `admin` | Contraseña (Cambiar en Prod) |
-| `SPRING_DATASOURCE_URL`| `jdbc:postgresql://db:5432/poc_db` | URL de conexión interna |
+| `spring.jpa.hibernate.ddl-auto` | `update` | Mantiene los datos entre reinicios. |
+| `spring.threads.virtual.enabled` | `true` | **Habilita Proyecto Loom (Virtual Threads).** |
+| `endpoints.cors.allowed-origins` | `*` | Permite acceso desde cualquier origen. |
 
 ## 4. Gestión de Persistencia
 
-Los datos de la base de datos se mantienen en un volumen gestionado por Docker:
-- **Nombre del volumen:** `zenith-db-data`
-- **Ubicación en WSL:** `/var/lib/docker/volumes/` (gestionado por Docker Engine).
+Los datos se almacenan en PostgreSQL dentro de la instancia de Ubuntu (WSL).
+- **Nombre de la DB:** `poc_db`
+- **Usuario:** `postgres` / `admin`
+- **Persistencia:** Garantizada mediante el modo `update` de Hibernate.
 
 ## 5. Procedimientos de Mantenimiento
 
-### 🔄 Despliegue de Cambios
-Para actualizar el sistema tras un cambio de código:
+### 🔄 Despliegue de Cambios (Backend)
 ```bash
-./deploy.sh
+mvn spring-boot:run
 ```
 
-### 🧹 Limpieza de Entorno
-Para detener todo y eliminar volúmenes (borrado total de datos):
+### 🌐 Despliegue de Cambios (Frontend)
 ```bash
-docker-compose down -v
+npx serve -l 3000 frontend
 ```
 
 ### 📦 Copia de Seguridad (Backup)
-Para realizar un dump de la base de datos desde el host:
+Desde Windows o WSL:
 ```bash
-docker exec -t zenith-db pg_dumpall -c -U postgres > backup_$(date +%Y%m%d).sql
+pg_dump -U postgres poc_db > backup_mastery.sql
 ```
 
 ---
-*Última actualización: 2026-05-14*
+*Última actualización: 2026-05-14 | Versión Actual: 1.5.0*

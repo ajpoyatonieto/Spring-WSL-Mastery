@@ -1,44 +1,52 @@
-# 🚀 Java 21 PoC: Spring Boot 3 & PostgreSQL
+# Spring-WSL-Mastery 🚀 (v1.5.0)
 
-Este proyecto es una **Prueba de Concepto (PoC)** diseñada para explorar las capacidades de **Java 21** y **Spring Boot 3** en un entorno híbrido Windows/WSL.
+Proyecto PoC (Prueba de Concepto) para dominar el ecosistema de **Java 21**, **Spring Boot 3** y **WSL 2**, orientado a una futura aplicación comercial responsive y escalable.
 
-## 🛠️ Stack Tecnológico
+## 🌟 Características Destacadas
+- **Java 21 Mastery**: Uso de **Virtual Threads (Loom)** para alta concurrencia.
+- **Arquitectura Híbrida**: Backend en Windows consumiendo PostgreSQL nativo en WSL.
+- **Frontend Premium**: Interfaz responsive, modo oscuro y animaciones fluidas (Vanilla JS).
+- **PWA Ready**: Aplicación web progresiva instalable en dispositivos móviles con icono personalizado.
+- **Gestión Avanzada**: Ordenación dinámica multinivel, CRUD completo y calendario premium (Flatpickr).
 
-*   **Lenguaje:** Java 21 (Microsoft OpenJDK LTS)
-*   **Framework:** Spring Boot 3.2.5
-*   **Gestor de Dependencias:** Maven 3.9.7
-*   **Base de Datos:** PostgreSQL 14 (corriendo en WSL 2)
-*   **Entorno de Despliegue:** WSL (Ubuntu-22.04)
-
-## 🏗️ Arquitectura del Entorno
-
-El proyecto utiliza una arquitectura de desarrollo híbrida:
-*   **Desarrollo:** Windows 11 con VS Code / IntelliJ.
-*   **Servicios:** PostgreSQL corre de forma nativa en Ubuntu (WSL) para garantizar un entorno cercano a producción (Linux).
-*   **Interconectividad:** El puente de red de WSL permite acceder a la base de datos desde Windows mediante `localhost:5432`.
-
-## 🚀 Cómo empezar
-
-### Requisitos previos
-1. Tener instalado WSL 2 con Ubuntu.
-2. Java 21 configurado en el PATH.
-
-### Ejecución de la aplicación
-Desde la raíz del proyecto:
-```powershell
-mvn spring-boot:run
+## 📂 Estructura del Proyecto
+```text
+Spring-WSL-Mastery/
+├── backend/            # Spring Boot 3 + Java 21 API
+├── frontend/           # PWA Frontend
+│   ├── assets/         # Recursos organizados (css, js, images)
+│   ├── index.html      # Página principal
+│   ├── manifest.json   # Manifiesto PWA
+│   └── sw.js           # Service Worker
+├── ConfigManagement.md # Gestión de puertos y baseline
+├── History.md          # Registro de hitos y versiones
+└── Readme.md           # Este archivo
 ```
-La aplicación estará disponible en: `http://localhost:8080`
 
-### Acceso a la Base de Datos
-*   **DB Name:** `poc_db`
-*   **User:** `postgres`
-*   **Pass:** `admin`
-*   **Port:** `5432`
+## 🛠️ Requisitos Previos
+- **Windows 11** con **WSL 2** instalado (Ubuntu recomendado).
+- **Java 21** (Microsoft OpenJDK recomendado).
+- **PostgreSQL** corriendo en WSL (puerto 5432 expuesto).
 
-## 📝 Notas de Desarrollo
-- El historial detallado de cambios se encuentra en [History.md](./History.md).
-- Este proyecto se utiliza para probar características como **Virtual Threads** y **Pattern Matching**.
+## 🚀 Ejecución en Desarrollo
+
+1. **Iniciar Backend**:
+   ```bash
+   cd backend
+   mvn spring-boot:run
+   ```
+
+2. **Iniciar Frontend**:
+   ```bash
+   npx serve -l 3000 frontend
+   ```
+
+3. **Acceso Local**: [http://localhost:3000](http://localhost:3000)
+4. **Acceso WiFi**: [http://TU_IP_LOCAL:3000](http://TU_IP_LOCAL:3000)
+
+## 🛡️ Seguridad y Persistencia
+- Los datos se guardan en la DB `poc_db` de Postgres en WSL.
+- La persistencia está garantizada mediante Hibernate en modo `update`.
 
 ---
-*Desarrollado con la asistencia de Antigravity AI.*
+*Desarrollado como parte del Mastery Experiment | 2026*
