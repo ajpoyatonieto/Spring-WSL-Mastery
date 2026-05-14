@@ -6,6 +6,14 @@ const urgentInput = document.getElementById('urgentInput');
 const importantInput = document.getElementById('importantInput');
 const addBtn = document.getElementById('addBtn');
 
+// Inicializar Calendario Premium
+const fp = flatpickr("#deadlineInput", {
+    altInput: true,
+    altFormat: "F j, Y",
+    dateFormat: "Y-m-d",
+    theme: "dark"
+});
+
 // Estado
 let currentTasks = [];
 let sortCriteria = [];
@@ -126,7 +134,7 @@ function startEdit(id) {
 
     editingId = id;
     taskInput.value = task.title;
-    deadlineInput.value = task.deadline || '';
+    fp.setDate(task.deadline || ''); // Setear fecha en calendario
     urgentInput.checked = task.urgent;
     importantInput.checked = task.important;
     
@@ -138,7 +146,7 @@ function startEdit(id) {
 function resetForm() {
     editingId = null;
     taskInput.value = '';
-    deadlineInput.value = '';
+    fp.clear(); // Limpiar calendario
     urgentInput.checked = false;
     importantInput.checked = false;
     addBtn.innerText = 'Añadir Tarea';
