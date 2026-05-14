@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Java 21 PoC - Task Manager</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="background-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
+
+    <div class="container">
+        <header>
+            <h1>Task Manager <span class="badge">Java 21</span></h1>
+            <p>Conectado a PostgreSQL en WSL</p>
+        </header>
+
+        <section class="add-task">
+            <div class="form-container">
+                <input type="text" id="taskInput" placeholder="¿Qué hay que hacer?">
+                <div class="options-group">
+                    <input type="date" id="deadlineInput" title="Fecha límite">
+                    <label class="toggle-pill">
+                        <input type="checkbox" id="urgentInput">
+                        <span>Urgente</span>
+                    </label>
+                    <label class="toggle-pill">
+                        <input type="checkbox" id="importantInput">
+                        <span>Importante</span>
+                    </label>
+                    <button id="addBtn">Añadir Tarea</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="sort-controls">
+            <div class="sort-buttons">
+                <button onclick="toggleSort('urgent')" class="btn-sort">Urgent</button>
+                <button onclick="toggleSort('important')" class="btn-sort">Important</button>
+                <button onclick="toggleSort('deadline')" class="btn-sort">Deadline</button>
+                <button onclick="clearSort()" class="btn-clear">Reset Sort</button>
+            </div>
+            <div id="sortIndicators" class="sort-indicators">
+                <!-- Los criterios de ordenación aparecerán aquí -->
+            </div>
+        </section>
+
+        <section class="task-list-container">
+            <div id="taskList" class="task-list">
+                <!-- Las tareas se cargarán aquí -->
+                <div class="loader">Cargando tareas...</div>
+            </div>
+        </section>
+
+        <footer>
+            <div class="footer-content">
+                <p><strong>Spring-WSL-Mastery</strong></p>
+                <p>Versión <span id="appVersion">1.0.0</span></p>
+                <p>&copy; 2026 | Antonio J. Poyato | Antigravity Design</p>
+            </div>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

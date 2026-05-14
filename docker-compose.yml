@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:14-alpine
+    container_name: spring-wsl-db
+    environment:
+      POSTGRES_DB: poc_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "5432:5432"
+    volumes:
+      - spring-wsl-db-data:/var/lib/postgresql/data
+
+  backend:
+    build: ./backend
+    container_name: spring-wsl-backend
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/poc_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: admin
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    depends_on:
+      - db
+
+  frontend:
+    build: ./frontend
+    container_name: spring-wsl-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+volumes:
+  spring-wsl-db-data:
