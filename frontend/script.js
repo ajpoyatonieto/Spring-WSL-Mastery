@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:8080/api/tasks';
+const API_URL = `http://${location.hostname}:8080/api/tasks`;
 const taskList = document.getElementById('taskList');
 const taskInput = document.getElementById('taskInput');
 const deadlineInput = document.getElementById('deadlineInput');
