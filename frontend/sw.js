@@ -2,9 +2,9 @@ const CACHE_NAME = 'task-mastery-v1';
 const ASSETS = [
   './',
   './index.html',
-  './style.css',
-  './script.js',
-  './icon.png',
+  './assets/css/style.css',
+  './assets/js/script.js',
+  './assets/images/icon.png',
   './manifest.json'
 ];
 
