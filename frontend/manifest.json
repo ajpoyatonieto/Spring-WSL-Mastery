@@ -1,0 +1,16 @@
+{
+  "name": "Spring-WSL Task Mastery",
+  "short_name": "TaskMastery",
+  "description": "Premium Task Manager PoC for Java 21 & Spring Boot 3",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#6366f1",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
