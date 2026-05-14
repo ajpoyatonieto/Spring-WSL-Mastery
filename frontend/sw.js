@@ -1,4 +1,4 @@
-const CACHE_NAME = 'task-mastery-v1';
+const CACHE_NAME = 'task-mastery-v2';
 const ASSETS = [
   './',
   './index.html',
