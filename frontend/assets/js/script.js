@@ -1,10 +1,13 @@
 const API_URL = `http://${location.hostname}:8080/api/tasks`;
 const taskList = document.getElementById('taskList');
-const taskInput = document.getElementById('taskInput');
+const taskTitle = document.getElementById('taskTitle');
+const taskDesc = document.getElementById('taskDesc');
 const deadlineInput = document.getElementById('deadlineInput');
 const urgentInput = document.getElementById('urgentInput');
 const importantInput = document.getElementById('importantInput');
 const addBtn = document.getElementById('addBtn');
+const cancelBtn = document.getElementById('cancelBtn');
+const loginOverlay = document.getElementById('loginOverlay');
 
 // Inicializar Calendario Premium
 const fp = flatpickr("#deadlineInput", {
@@ -16,12 +19,55 @@ const fp = flatpickr("#deadlineInput", {
 
 // Estado
 let currentTasks = [];
-let sortCriteria = [];
+let sortCriteria = [
+    { field: 'urgent', dir: 'desc' },
+    { field: 'important', dir: 'desc' },
+    { field: 'deadline', dir: 'asc' }
+];
 let editingId = null;
 
-async function fetchTasks() {
+function getAuthHeader() {
+    const auth = localStorage.getItem('task_auth');
+    return auth ? { 'Authorization': `Basic ${auth}` } : {};
+}
+
+async function login() {
+    const user = document.getElementById('username').value;
+    const pass = document.getElementById('password').value;
+    if (!user || !pass) return;
+    const auth = btoa(`${user}:${pass}`);
+    
     try {
-        const response = await fetch(API_URL);
+        const response = await fetch(API_URL, {
+            headers: { 'Authorization': `Basic ${auth}` }
+        });
+        
+        if (response.ok) {
+            localStorage.setItem('task_auth', auth);
+            loginOverlay.style.display = 'none';
+            fetchTasks();
+        } else {
+            document.getElementById('loginError').style.display = 'block';
+        }
+    } catch (error) {
+        console.error('Login error:', error);
+    }
+}
+
+async function fetchTasks() {
+    const headers = getAuthHeader();
+    if (!headers.Authorization) {
+        loginOverlay.style.display = 'flex';
+        return;
+    }
+
+    try {
+        const response = await fetch(API_URL, { headers });
+        if (response.status === 401) {
+            localStorage.removeItem('task_auth');
+            loginOverlay.style.display = 'flex';
+            return;
+        }
         currentTasks = await response.json();
         applySortAndRender();
     } catch (error) {
@@ -55,7 +101,7 @@ function applySortAndRender() {
 
 function renderTasks(tasks) {
     if (tasks.length === 0) {
-        taskList.innerHTML = '<div class="loader">No hay tareas.</div>';
+        taskList.innerHTML = '<div class="loader">No hay tareas pendientes.</div>';
         return;
     }
 
@@ -71,7 +117,8 @@ function renderTasks(tasks) {
                  onclick="toggleComplete(${task.id})"
                  style="background: ${task.completed ? '#10b981' : (task.urgent ? '#ef4444' : (task.important ? '#f59e0b' : '#334155'))}; cursor: pointer"></div>
             <div class="task-info">
-                <span>${task.title}</span>
+                <strong style="font-size: 1.1rem">${task.title}</strong>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 5px;">${task.description || ''}</p>
                 <div class="task-badges">
                     ${task.urgent ? '<span class="task-badge badge-urgent">Urgente</span>' : ''}
                     ${task.important ? '<span class="task-badge badge-important">Importante</span>' : ''}
@@ -88,11 +135,13 @@ function renderTasks(tasks) {
 }
 
 async function handleSave() {
-    const title = taskInput.value.trim();
+    const title = taskTitle.value.trim();
+    const description = taskDesc.value.trim();
     if (!title) return;
 
     const task = {
         title,
+        description,
         urgent: urgentInput.checked,
         important: importantInput.checked,
         deadline: deadlineInput.value || null,
@@ -101,20 +150,20 @@ async function handleSave() {
 
     try {
         let response;
+        const headers = { ...getAuthHeader(), 'Content-Type': 'application/json' };
+        
         if (editingId) {
-            // EDITAR
             const existing = currentTasks.find(t => t.id === editingId);
             task.completed = existing.completed;
             response = await fetch(`${API_URL}/${editingId}`, {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
+                headers,
                 body: JSON.stringify(task)
             });
         } else {
-            // CREAR
             response = await fetch(API_URL, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers,
                 body: JSON.stringify(task)
             });
         }
@@ -133,22 +182,26 @@ function startEdit(id) {
     if (!task) return;
 
     editingId = id;
-    taskInput.value = task.title;
-    fp.setDate(task.deadline || ''); // Setear fecha en calendario
+    taskTitle.value = task.title;
+    taskDesc.value = task.description || '';
+    fp.setDate(task.deadline || '');
     urgentInput.checked = task.urgent;
     importantInput.checked = task.important;
     
+    cancelBtn.style.display = 'block';
     addBtn.innerText = 'Guardar Cambios';
     addBtn.style.background = 'var(--accent)';
-    taskInput.focus();
+    taskTitle.focus();
 }
 
 function resetForm() {
     editingId = null;
-    taskInput.value = '';
-    fp.clear(); // Limpiar calendario
+    taskTitle.value = '';
+    taskDesc.value = '';
+    fp.clear();
     urgentInput.checked = false;
     importantInput.checked = false;
+    cancelBtn.style.display = 'none';
     addBtn.innerText = 'Añadir Tarea';
     addBtn.style.background = 'var(--primary)';
 }
@@ -156,7 +209,10 @@ function resetForm() {
 async function deleteTask(id) {
     if (!confirm('¿Estás seguro de borrar esta tarea?')) return;
     try {
-        await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+        await fetch(`${API_URL}/${id}`, { 
+            method: 'DELETE',
+            headers: getAuthHeader()
+        });
         fetchTasks();
     } catch (error) {
         console.error('Error deleting task:', error);
@@ -170,7 +226,7 @@ async function toggleComplete(id) {
     try {
         await fetch(`${API_URL}/${id}`, {
             method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { ...getAuthHeader(), 'Content-Type': 'application/json' },
             body: JSON.stringify({ ...task, completed: !task.completed })
         });
         fetchTasks();
@@ -199,7 +255,7 @@ function renderSortIndicators() {
     const container = document.getElementById('sortIndicators');
     if (!container) return;
     if (sortCriteria.length === 0) {
-        container.innerHTML = '<span style="font-size: 0.8rem; color: var(--text-muted)">Orden por defecto</span>';
+        container.innerHTML = '<span style="font-size: 0.8rem; color: var(--text-muted)">Sin ordenación</span>';
         return;
     }
     container.innerHTML = sortCriteria.map((c, i) => `
@@ -208,14 +264,14 @@ function renderSortIndicators() {
 }
 
 addBtn.addEventListener('click', handleSave);
-taskInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') handleSave();
-});
+cancelBtn.addEventListener('click', resetForm);
+taskTitle.addEventListener('keypress', (e) => { if (e.key === 'Enter') taskDesc.focus(); });
 
 window.toggleSort = toggleSort;
 window.clearSort = clearSort;
 window.startEdit = startEdit;
 window.deleteTask = deleteTask;
 window.toggleComplete = toggleComplete;
+window.login = login;
 
 fetchTasks();

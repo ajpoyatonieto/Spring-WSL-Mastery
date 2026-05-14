@@ -1,4 +1,4 @@
-# Spring-WSL-Mastery 🚀 (v1.5.0)
+# Spring-WSL-Mastery 🚀 (v2.0.0)
 
 Proyecto PoC (Prueba de Concepto) para dominar el ecosistema de **Java 21**, **Spring Boot 3** y **WSL 2**, orientado a una futura aplicación comercial responsive y escalable.
 

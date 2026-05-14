@@ -13,6 +13,16 @@
     <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/dark.css">
 </head>
 <body>
+    <div id="loginOverlay" class="login-overlay">
+        <div class="login-card">
+            <h2>Acceso Seguro</h2>
+            <input type="text" id="username" placeholder="Usuario">
+            <input type="password" id="password" placeholder="Contraseña">
+            <button onclick="login()">Entrar</button>
+            <p id="loginError" style="color: #ef4444; margin-top: 10px; display: none;">Credenciales incorrectas</p>
+        </div>
+    </div>
+
     <div class="background-blobs">
         <div class="blob blob-1"></div>
         <div class="blob blob-2"></div>
@@ -26,7 +36,8 @@
 
         <section class="add-task">
             <div class="form-container">
-                <input type="text" id="taskInput" placeholder="¿Qué hay que hacer?">
+                <input type="text" id="taskTitle" placeholder="Título de la tarea (Ej: Compras)">
+                <textarea id="taskDesc" placeholder="¿Qué hay que hacer exactamente? (Descripción amplia)" rows="3"></textarea>
                 <div class="options-group">
                     <input type="text" id="deadlineInput" placeholder="Fecha límite" readonly>
                     <label class="toggle-pill">
@@ -37,7 +48,10 @@
                         <input type="checkbox" id="importantInput">
                         <span>Importante</span>
                     </label>
+                </div>
+                <div class="form-actions">
                     <button id="addBtn">Añadir Tarea</button>
+                    <button id="cancelBtn" class="btn-cancel" style="display: none;">Cancelar</button>
                 </div>
             </div>
         </section>
@@ -64,7 +78,7 @@
         <footer>
             <div class="footer-content">
                 <p><strong>Spring-WSL-Mastery</strong></p>
-                <p>Versión <span id="appVersion">1.0.0</span></p>
+                <p>Versión <span id="appVersion">2.0.0</span></p>
                 <p>&copy; 2026 | Antonio J. Poyato | Antigravity Design</p>
             </div>
         </footer>

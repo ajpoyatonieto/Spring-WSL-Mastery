@@ -91,5 +91,11 @@ El proyecto se divide en dos componentes principales:
 - **Persistencia**: Cambio a `ddl-auto=update` para conservar datos reales.
 - **Acceso Remoto**: Configuración de API dinámica para acceso desde móviles en la misma red Wi-Fi.
 
+### 11. Versión 2.0.0 - Seguridad y Modelo Extendido
+- **Seguridad**: Implementación de Spring Security (Basic Auth) y Login Overlay.
+- **Modelo**: Adición de campo `title` y conversión de `description` a área de texto amplia.
+- **Lógica**: Ordenación por defecto multinivel (Urgencia > Importancia > Fecha).
+- **UX**: Botón de cancelación de edición y diseño responsive avanzado.
+
 ---
 *Documento actualizado por Antigravity (AI Assistant) | 2026-05-14*
